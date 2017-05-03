@@ -22,15 +22,11 @@ trait KMeans[T, R] {
   final def eqMean: Eq[Mean] =
     Eq.by(_.value)
 
-  final def assignOne(t: T, means: Means): Mean = {
-    val (mean, _) = means.map(m => (m, distance(t, m.value))).toList.minBy {
-      case (_, dist) => dist
-    }
-    mean
-  }
+  final def nearestMean(t: T, means: Means): Mean =
+    means.map(m => (m, distance(t, m.value))).toList.minBy(_._2)._1
 
   final def assignMany(ts: List[T], means: Means): List[Cluster] =
-    ts.groupBy(t => assignOne(t, means)).toList.collect {
+    ts.groupBy(t => nearestMean(t, means)).toList.collect {
       case (mean, head :: tail) => Cluster(mean, NonEmptyList(head, tail))
     }
 
