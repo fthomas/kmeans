@@ -15,8 +15,9 @@ abstract class KMeans2 {
   def calculateMean(points: List[Point]): Mean
 
   def calculateCluster(points: List[Point], means: List[Mean]): List[Cluster] =
-    points.groupBy(point => nearestMean(point, means)).toList.map { case (mean, pointsByMean) =>
-      Cluster(mean, pointsByMean)
+    points.groupBy(point => nearestMean(point, means)).toList.map {
+      case (mean, pointsByMean) =>
+        Cluster(mean, pointsByMean)
     }
 
   def nearestMean(point: Point, means: List[Mean]): Mean =
