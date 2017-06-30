@@ -1,3 +1,4 @@
+/*
 import cats.data.NonEmptyList
 import cats.kernel.Eq
 
@@ -47,3 +48,4 @@ trait KMeans[T, R] {
     }
   }
 }
+*/

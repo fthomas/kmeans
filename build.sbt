@@ -1,8 +1,12 @@
 name := "kmeans"
 
-libraryDependencies ++= Seq(
-  "org.typelevel" %% "cats-core" % "0.9.0"
-)
+/// projects
+
+lazy val core = crossProject
+  .in(file("modules/core"))
+
+lazy val coreJS = core.js
+lazy val coreJVM = core.jvm
 
 /// commands
 
