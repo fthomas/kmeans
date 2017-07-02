@@ -4,9 +4,36 @@ name := "kmeans"
 
 lazy val core = crossProject
   .in(file("modules/core"))
+  .settings(commonSettings)
 
 lazy val coreJS = core.js
 lazy val coreJVM = core.jvm
+
+/// settings
+
+lazy val commonSettings = Def.settings(
+  compileSettings
+)
+
+lazy val compileSettings = Def.settings(
+  scalacOptions ++= Seq(
+    "-deprecation",
+    "-encoding",
+    "UTF-8",
+    "-feature",
+    "-language:existentials",
+    "-language:experimental.macros",
+    "-language:higherKinds",
+    "-language:implicitConversions",
+    "-unchecked",
+    "-Xfatal-warnings",
+    "-Xfuture",
+    "-Xlint",
+    "-Yno-adapted-args",
+    "-Ywarn-numeric-widen",
+    "-Ywarn-value-discard"
+  )
+)
 
 /// commands
 

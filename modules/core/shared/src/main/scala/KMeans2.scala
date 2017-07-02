@@ -60,7 +60,7 @@ class KmeansImpl extends KMeans2 {
     scala.math.Ordering.Double
 
   override def distance(x: Point, y: Point): Double =
-    math.sqrt(math.pow(x._1 - y._1, 2) + math.pow(x._2 - y._2, 2))
+    math.sqrt(math.pow((x._1 - y._1).toDouble, 2) + math.pow((x._2 - y._2).toDouble, 2))
 
   override def calculateMean(points: List[Point]): Mean = {
     val size = points.size
