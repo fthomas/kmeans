@@ -13,7 +13,7 @@ lazy val gui = crossProject
   .in(file("modules/gui"))
   .dependsOn(core)
   .settings(commonSettings)
-  .jsSettings(
+  .settings(
     // This is an application with a main method
     scalaJSUseMainModuleInitializer := true
   )
