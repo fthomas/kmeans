@@ -27,7 +27,24 @@ abstract class KMeans2 {
   final def iterate(points: List[Point], means: List[Mean]): List[Cluster] = {
     val cluster = calculateCluster(points, means)
     val newMeans = cluster.map(c => calculateMean(c.points))
-    if (means == newMeans) cluster else iterate(points, newMeans)
+    if (means == newMeans) cluster else {
+
+      iterate(points, newMeans)
+    }
+  }
+
+  final def iterate2(points: List[Point], means: List[Mean]): Stream[List[Cluster]] = {
+    val cluster = calculateCluster(points, means)
+
+    val head = cluster
+    def tail: Stream[List[Cluster]] = {
+      val newMeans = cluster.map(c => calculateMean(c.points))
+      if (means == newMeans) Stream.empty else {
+        println(2)
+        iterate2(points, newMeans)
+      }
+    }
+    head #:: tail
   }
 
   def initialMeans(k: Int, points: List[Point]): List[Mean] =
@@ -35,6 +52,9 @@ abstract class KMeans2 {
 
   def kMeans(k: Int, points: List[Point]): List[Cluster] =
     iterate(points, initialMeans(k, points))
+
+  def kMeans2(k: Int, points: List[Point]): Stream[List[Cluster]] =
+    iterate2(points, initialMeans(k, points))
 }
 
 class KmeansImpl extends KMeans2 {
