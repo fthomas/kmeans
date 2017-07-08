@@ -42,7 +42,7 @@ lazy val compileSettings = Def.settings(
     "-unchecked",
     //"-Xfatal-warnings",
     "-Xfuture",
-    //"-Xlint",
+    "-Xlint",
     "-Yno-adapted-args",
     "-Ywarn-numeric-widen",
     "-Ywarn-value-discard"

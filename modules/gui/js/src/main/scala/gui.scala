@@ -1,9 +1,11 @@
-import org.scalajs.dom
+import kmeans.KMeans2D
 import org.scalajs.dom.ext.Color
 import org.scalajs.dom.html.Canvas
 import org.scalajs.dom.{CanvasRenderingContext2D, document, window}
 
-object Hello {
+import scala.util.Random
+
+object gui {
   def main(args: Array[String]): Unit = {
 
     val canvas = document.createElement("canvas").asInstanceOf[Canvas]
@@ -26,27 +28,28 @@ object Hello {
       ctx.fillStyle = origStyle
     }
 
-    def randomPoints(): List[(Int, Int)] =
-      List.fill(10000)(
-        (scala.util.Random.nextInt(600), scala.util.Random.nextInt(600))
-      )
+    def randomPoints(n: Int): List[(Int, Int)] =
+      List.fill(n)(
+        (Random.nextInt(canvas.width), Random.nextInt(canvas.height)))
 
-    val k = new KmeansImpl()
-    // val cluster = k.kMeans(30, randomPoints())
+    val k = new KMeans2D()
+    val cluster = k.run(7, randomPoints(1000))
 //List((40,40), (10,1), (200,300), (400,400),
     //(30, 150), (500,500),  (50,50), (300, 301), (452,102)).reverse
 
     val colors = Color.all.filter(_ != Color.White)
     val colors2 = colors ++ colors ++ colors ++ colors ++ colors
 
-    /*cluster.zip(colors2).foreach { case (c, color) =>
-      c.points.foreach(drawPoint(_, color))
-      drawPoint2(c.mean.value, Color.Black)
-    }*/
+    cluster.zip(colors2).foreach {
+      case (c, color) =>
+        c.points.foreach(drawPoint(_, color))
+        drawPoint2(c.mean.value, Color.Black)
+    }
 
     //println(cluster)
 
-    val cluster2 = k.kMeans2(3, randomPoints())
+    /*
+    val cluster2 = k.runWithIntermediateSteps(3, randomPoints())
 
     cluster2.foreach { cluster =>
       println(cluster)
@@ -58,7 +61,7 @@ object Hello {
           drawPoint2(c.mean.value, Color.Black)
       }
 
-    }
+    }*/
     ()
   }
 }
