@@ -1,39 +1,40 @@
-import kmeans.KMeans2D
+package kmeans
+
 import org.scalajs.dom.ext.Color
-import org.scalajs.dom.html.Canvas
-import org.scalajs.dom.{CanvasRenderingContext2D, document, window}
+import org.scalajs.dom.{document, window}
 
 import scala.util.Random
 
 object gui {
   def main(args: Array[String]): Unit = {
 
-    val canvas = document.createElement("canvas").asInstanceOf[Canvas]
+    val canvas = document.createCanvas
     canvas.width = window.innerWidth.toInt - 10
     canvas.height = window.innerHeight.toInt - 20
     document.body.appendChild(canvas)
 
-    val ctx = canvas.getContext("2d").asInstanceOf[CanvasRenderingContext2D]
+    val ctx = canvas.getContext2d
 
-    def drawPoint(tuple: (Int, Int), color: Color) = {
+    def drawPoint(tuple: Point2D, color: Color) = {
       val origStyle = ctx.fillStyle
       ctx.fillStyle = color.toString()
-      ctx.fillRect(tuple._1.toDouble, tuple._2.toDouble, 8, 8)
+      ctx.fillRect(tuple.x, tuple.y, 12, 12)
       ctx.fillStyle = origStyle
     }
-    def drawPoint2(tuple: (Int, Int), color: Color) = {
+    def drawPoint2(tuple: Point2D, color: Color) = {
       val origStyle = ctx.fillStyle
       ctx.fillStyle = color.toString()
-      ctx.fillRect(tuple._1.toDouble, tuple._2.toDouble, 16, 16)
+      ctx.fillRect(tuple.x, tuple.y, 16, 16)
       ctx.fillStyle = origStyle
     }
 
-    def randomPoints(n: Int): List[(Int, Int)] =
+    def randomPoints(n: Int): List[Point2D] =
       List.fill(n)(
-        (Random.nextInt(canvas.width), Random.nextInt(canvas.height)))
+        Point2D(Random.nextInt(canvas.width).toDouble,
+                Random.nextInt(canvas.height).toDouble))
 
     val k = new KMeans2D()
-    val cluster = k.run(7, randomPoints(1000))
+    val cluster = k.runLast(37, randomPoints(5000))
 //List((40,40), (10,1), (200,300), (400,400),
     //(30, 150), (500,500),  (50,50), (300, 301), (452,102)).reverse
 

@@ -5,6 +5,11 @@ name := "kmeans"
 lazy val core = crossProject
   .in(file("modules/core"))
   .settings(commonSettings)
+  .settings(
+    libraryDependencies ++= Seq(
+      "org.typelevel" %%% "cats-kernel" % "0.9.0"
+    )
+  )
 
 lazy val coreJS = core.js
 lazy val coreJVM = core.jvm
