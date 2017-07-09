@@ -34,14 +34,11 @@ object gui {
                 Random.nextInt(canvas.height).toDouble))
 
     val k = new KMeans2D()
-    val cluster = k.runLast(37, randomPoints(5000))
+    val cluster = k.runLast(7, randomPoints(50000))
 //List((40,40), (10,1), (200,300), (400,400),
     //(30, 150), (500,500),  (50,50), (300, 301), (452,102)).reverse
 
-    val colors = Color.all.filter(_ != Color.White)
-    val colors2 = colors ++ colors ++ colors ++ colors ++ colors
-
-    cluster.zip(colors2).foreach {
+    cluster.zip(color.random).foreach {
       case (c, color) =>
         c.points.foreach(drawPoint(_, color))
         drawPoint2(c.mean.value, Color.Black)
