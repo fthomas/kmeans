@@ -2,7 +2,6 @@ package kmeans
 
 trait KMeans {
   type Point
-
   type Distance
 
   def distance(p1: Point, p2: Point): Distance

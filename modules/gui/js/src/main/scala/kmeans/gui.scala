@@ -15,9 +15,9 @@ object gui {
 
     val ctx = canvas.getContext2d
 
-    def drawPoint(tuple: Point2D, color: Color) = {
+    def drawPoint(tuple: Point2D, color: String) = {
       val origStyle = ctx.fillStyle
-      ctx.fillStyle = color.toString()
+      ctx.fillStyle = color
       ctx.fillRect(tuple.x, tuple.y, 12, 12)
       ctx.fillStyle = origStyle
     }
@@ -34,11 +34,9 @@ object gui {
                 Random.nextInt(canvas.height).toDouble))
 
     val k = new KMeans2D()
-    val cluster = k.runLast(7, randomPoints(50000))
-//List((40,40), (10,1), (200,300), (400,400),
-    //(30, 150), (500,500),  (50,50), (300, 301), (452,102)).reverse
+    val cluster = k.runLast(7, randomPoints(10000))
 
-    cluster.zip(color.random).foreach {
+    cluster.zip(color.random.map(_.toString())).foreach {
       case (c, color) =>
         c.points.foreach(drawPoint(_, color))
         drawPoint2(c.mean.value, Color.Black)
