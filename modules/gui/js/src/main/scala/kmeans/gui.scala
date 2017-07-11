@@ -42,22 +42,19 @@ object gui {
     implicit val meanOrdering: Ordering[k.Mean] =
       Ordering[(Double, Double)].on(m => (m.value.x, m.value.y))
 
-    var steps = k.runLog(7, randomPoints(30000)).map(_.sortBy(_.mean))
+    val steps = k.runLog(9, randomPoints(30000)).map(_.sortBy(_.mean))
 
-    def animate(): Unit = {
+    def animate(steps: Stream[List[k.Cluster]]): Unit = {
       steps match {
         case cluster #:: tail =>
           ctx.clearCanvas()
           drawCluster(cluster)
-          steps = tail
-          timers.setTimeout(100.millisecond) {
-            animate()
-          }
+          timers.setTimeout(100.millisecond)(animate(tail))
           ()
         case _ => ()
       }
     }
 
-    animate()
+    animate(steps)
   }
 }
