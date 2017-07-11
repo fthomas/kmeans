@@ -4,8 +4,11 @@ import org.scalajs.dom.ext.Color
 import scala.util.Random
 
 object color {
-  val random: Stream[Color] = {
+  def random: Color = {
     def rgb = Random.nextInt(256)
-    Stream.continually(Color(rgb, rgb, rgb))
+    Color(rgb, rgb, rgb)
   }
+
+  val randomStream: Stream[Color] =
+    Stream.continually(random)
 }

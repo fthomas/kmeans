@@ -2,7 +2,8 @@ package kmeans
 
 import org.scalajs.dom.ext.Color
 import org.scalajs.dom.{document, window}
-
+import scala.concurrent.duration._
+import scala.scalajs.js.timers
 import scala.util.Random
 
 object gui {
@@ -15,17 +16,12 @@ object gui {
 
     val ctx = canvas.getContext2d
 
-    def drawPoint(tuple: Point2D, color: String) = {
-      val origStyle = ctx.fillStyle
+    def drawPoint(p: Point2D, color: String) = {
       ctx.fillStyle = color
-      ctx.fillRect(tuple.x, tuple.y, 12, 12)
-      ctx.fillStyle = origStyle
+      ctx.fillRect(p.x, p.y, 8, 8)
     }
-    def drawPoint2(tuple: Point2D, color: Color) = {
-      val origStyle = ctx.fillStyle
-      ctx.fillStyle = color.toString()
-      ctx.fillRect(tuple.x, tuple.y, 16, 16)
-      ctx.fillStyle = origStyle
+    def drawPoint2(p: Point2D, color: Color) = {
+      ctx.fillCircle(p, 8.0, color.toString())
     }
 
     def randomPoints(n: Int): List[Point2D] =
@@ -33,32 +29,35 @@ object gui {
         Point2D(Random.nextInt(canvas.width).toDouble,
                 Random.nextInt(canvas.height).toDouble))
 
-    val k = new KMeans2D()
-    val cluster = k.runLast(7, randomPoints(10000))
+    val k = new KMeans2D
 
-    cluster.zip(color.random.map(_.toString())).foreach {
-      case (c, color) =>
-        c.points.foreach(drawPoint(_, color))
-        drawPoint2(c.mean.value, Color.Black)
-    }
-
-    //println(cluster)
-
-    //scalajs.js.timers.set
-    /*
-    val cluster2 = k.runWithIntermediateSteps(3, randomPoints())
-
-    cluster2.foreach { cluster =>
-      println(cluster)
-
-      ctx.clearRect(0.0, 0.0, 2000.0, 2000.0)
-      cluster.zip(colors2).foreach {
+    def drawCluster(cluster: List[k.Cluster]): Unit = {
+      cluster.zip(color.randomStream.map(_.toString())).foreach {
         case (c, color) =>
           c.points.foreach(drawPoint(_, color))
           drawPoint2(c.mean.value, Color.Black)
       }
+    }
 
-    }*/
-    ()
+    implicit val meanOrdering: Ordering[k.Mean] =
+      Ordering[(Double, Double)].on(m => (m.value.x, m.value.y))
+
+    var steps = k.runLog(7, randomPoints(30000)).map(_.sortBy(_.mean))
+
+    def animate(): Unit = {
+      steps match {
+        case cluster #:: tail =>
+          ctx.clearCanvas()
+          drawCluster(cluster)
+          steps = tail
+          timers.setTimeout(100.millisecond) {
+            animate()
+          }
+          ()
+        case _ => ()
+      }
+    }
+
+    animate()
   }
 }
