@@ -44,6 +44,7 @@ object gui {
 
     //println(cluster)
 
+    //scalajs.js.timers.set
     /*
     val cluster2 = k.runWithIntermediateSteps(3, randomPoints())
 

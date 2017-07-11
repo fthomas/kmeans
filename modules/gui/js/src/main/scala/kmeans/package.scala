@@ -11,4 +11,11 @@ package object kmeans {
     def getContext2d: CanvasRenderingContext2D =
       self.getContext("2d").asInstanceOf[CanvasRenderingContext2D]
   }
+
+  implicit class CanvasRenderingContext2DOps(val self: CanvasRenderingContext2D) extends AnyVal {
+    def clearCanvas(): Unit = {
+      // https://stackoverflow.com/questions/2142535/how-to-clear-the-canvas-for-redrawing
+      self.clearRect(0.0, 0.0, self.canvas.width, self.canvas.height)
+    }
+  }
 }
