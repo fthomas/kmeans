@@ -24,10 +24,21 @@ object gui {
       ctx.fillCircle(p, 8.0, color.toString())
     }
 
-    def randomPoints(n: Int): List[Point2D] =
-      List.fill(n)(
+    def randomPoints(n: Int): List[Point2D] = {
+
+     /* List.fill(n)(
         Point2D(Random.nextInt(canvas.width).toDouble,
-                Random.nextInt(canvas.height).toDouble))
+          Random.nextInt(canvas.height).toDouble))*/
+
+      Random.shuffle(
+      List.fill(5)(
+        Point2D(Random.nextInt(canvas.width).toDouble,
+          Random.nextInt(canvas.height).toDouble)).flatMap(p =>
+      List.fill(1000)(Point2D(p.x + canvas.width / 10 * Random.nextGaussian(),
+        p.y + canvas.height / 10 * Random.nextGaussian()))
+          .filter(p => p.x < canvas.width && p.y < canvas.height && p.x >0 && p.y >0)
+      ))
+    }
 
     val k = new KMeans2D
 
@@ -42,7 +53,7 @@ object gui {
     implicit val meanOrdering: Ordering[k.Mean] =
       Ordering[(Double, Double)].on(m => (m.value.x, m.value.y))
 
-    val steps = k.runLog(9, randomPoints(30000)).map(_.sortBy(_.mean))
+    val steps = k.runSteps(5, randomPoints(30000)).map(_.sortBy(_.mean))
 
     def animate(steps: Stream[List[k.Cluster]]): Unit = {
       steps match {

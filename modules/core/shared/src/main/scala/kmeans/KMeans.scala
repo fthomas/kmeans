@@ -33,9 +33,9 @@ trait KMeans {
   def initialMeans(k: Int, points: List[Point]): Set[Mean] =
     points.take(k).map(Mean).toSet
 
-  final def runLog(k: Int, points: List[Point]): Stream[List[Cluster]] =
+  final def runSteps(k: Int, points: List[Point]): Stream[List[Cluster]] =
     iterate(points, initialMeans(k, points))
 
   final def runLast(k: Int, points: List[Point]): List[Cluster] =
-    runLog(k, points).last
+    runSteps(k, points).last
 }
