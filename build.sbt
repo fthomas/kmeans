@@ -61,5 +61,7 @@ addCommandsAlias("validate",
                    "test:scalafmt::test",
                    "sbt:scalafmt::test",
                    "test",
-                   "doc"
+                   "doc",
+                   "clean",
+                   "guiJS/fullOptJS"
                  ))
