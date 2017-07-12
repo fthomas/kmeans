@@ -18,3 +18,10 @@ script:
 - sbt ++$TRAVIS_SCALA_VERSION validate
 after_success:
 - codecov
+deploy:
+  provider: pages
+  local_dir: ./modules/gui/js/target/scala-2.12/
+  skip_cleanup: true
+  github_token: $GITHUB_TOKEN
+  on:
+    branch: master
