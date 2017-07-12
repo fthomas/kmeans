@@ -23,6 +23,28 @@ lazy val gui = crossProject
 
 lazy val guiJS = gui.js
 
+def genIndexHtml(sourceDirectory: File, jsScript: File): File = {
+  val indexName = "index.html"
+  val indexHtml = jsScript.getParentFile / indexName
+  val htmlTemplate = sourceDirectory / indexName
+
+  val jsName = jsScript.getName
+  val content = IO.read(htmlTemplate).replaceAllLiterally("@JS_NAME@", jsName)
+
+  IO.write(indexHtml, content)
+  indexHtml
+}
+
+fastOptJS in guiJS := (fastOptJS in (guiJS, Compile)).value.map { file =>
+  genIndexHtml((sourceDirectory in guiJS).value, file)
+  file
+}
+
+fullOptJS in guiJS := (fullOptJS in (guiJS, Compile)).value.map { file =>
+  genIndexHtml((sourceDirectory in guiJS).value, file)
+  file
+}
+
 /// settings
 
 lazy val commonSettings = Def.settings(
