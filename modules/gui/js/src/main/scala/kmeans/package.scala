@@ -1,5 +1,6 @@
 import org.scalajs.dom.CanvasRenderingContext2D
 import org.scalajs.dom.html.{Canvas, Document}
+import scala.util.Random
 
 package object kmeans {
   implicit class DocumentOps(val self: Document) extends AnyVal {
@@ -10,6 +11,10 @@ package object kmeans {
   implicit class CanvasOps(val self: Canvas) extends AnyVal {
     def getContext2d: CanvasRenderingContext2D =
       self.getContext("2d").asInstanceOf[CanvasRenderingContext2D]
+
+    def randomPoint(): Point2D =
+      Point2D(Random.nextInt(self.width).toDouble,
+              Random.nextInt(self.height).toDouble)
   }
 
   implicit class CanvasRenderingContext2DOps(
