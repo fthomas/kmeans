@@ -12,9 +12,21 @@ package object kmeans {
     def getContext2d: CanvasRenderingContext2D =
       self.getContext("2d").asInstanceOf[CanvasRenderingContext2D]
 
+    def isVisible(p: Point2D): Boolean =
+      p.x >= 0.0 && p.y >= 0.0 && p.x <= self.width && p.y <= self.height
+
     def randomPoint(): Point2D =
       Point2D(Random.nextInt(self.width).toDouble,
               Random.nextInt(self.height).toDouble)
+
+    def randomCluster(numberOfPoints: Int): List[Point2D] = {
+      val scale = math.min(self.width, self.height) * 0.14
+      def offset() = scale * Random.nextGaussian()
+
+      val center = randomPoint()
+      def point() = Point2D(center.x + offset(), center.y + offset())
+      List.fill(numberOfPoints)(point()).filter(isVisible)
+    }
   }
 
   implicit class CanvasRenderingContext2DOps(

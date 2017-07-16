@@ -1,6 +1,5 @@
 package kmeans
 
-import org.scalajs.dom.ext.Color
 import org.scalajs.dom.{document, window}
 import scala.concurrent.duration._
 import scala.scalajs.js.timers
@@ -8,7 +7,6 @@ import scala.util.Random
 
 object gui {
   def main(args: Array[String]): Unit = {
-
     val canvas = document.createCanvas
     canvas.width = window.innerWidth.toInt - 10
     canvas.height = window.innerHeight.toInt - 20
@@ -16,52 +14,36 @@ object gui {
 
     val ctx = canvas.getContext2d
 
-    def drawPoint(p: Point2D, color: String) = {
-      ctx.fillStyle = color
-      ctx.fillRect(p.x, p.y, 8, 8)
-    }
+    def drawPoint(point: Point2D): Unit =
+      ctx.fillRect(point.x, point.y, 8.0, 8.0)
 
-    def drawPoint2(p: Point2D, color: Color) = {
-      ctx.fillCircle(p, 8.0, color.toString())
-    }
+    def drawMean(mean: Mean[Point2D]): Unit =
+      ctx.fillCircle(mean.value, 8.0, "black")
 
-    val clusterCnt = 2 + Random.nextInt(5)
-
-    def randomPoints(n: Int): List[Point2D] = {
-      Random.shuffle(List
-        .fill(clusterCnt)(canvas.randomPoint())
-        .flatMap(p =>
-          List
-            .fill(1000)(
-              Point2D(p.x + canvas.width / 10 * Random.nextGaussian(),
-                      p.y + canvas.height / 10 * Random.nextGaussian()))
-            .filter(p =>
-              p.x < canvas.width && p.y < canvas.height && p.x > 0 && p.y > 0)))
-    }
-
-    def drawCluster(cluster: List[Cluster[Point2D]]): Unit = {
-      cluster.zip(color.randomStream.map(_.toString())).foreach {
-        case (c, color) =>
-          c.points.foreach(drawPoint(_, color))
-          drawPoint2(c.mean.value, Color.Black)
+    def drawClusters(clusters: List[Cluster[Point2D]]): Unit =
+      clusters.zip(color.randomStream).foreach {
+        case (cluster, color) =>
+          ctx.fillStyle = color.toString
+          cluster.points.foreach(drawPoint)
+          drawMean(cluster.mean)
       }
-    }
 
-    implicit val meanOrdering: Ordering[Mean[Point2D]] =
-      Ordering[(Double, Double)].on(m => (m.value.x, m.value.y))
-
-    def animate(steps: Stream[List[Cluster[Point2D]]]): Unit = {
+    def animateClusters(steps: Stream[List[Cluster[Point2D]]]): Unit = {
       if (steps.nonEmpty) {
         ctx.clearCanvas()
-        drawCluster(steps.head)
-        timers.setTimeout(100.millisecond)(animate(steps.tail))
+        drawClusters(steps.head)
+        timers.setTimeout(100.millisecond)(animateClusters(steps.tail))
         ()
       }
     }
 
-    val k = new KMeans2D
-    val steps =
-      k.runSteps(clusterCnt, randomPoints(30000)).map(_.sortBy(_.mean))
-    animate(steps)
+    implicit val point2dOrdering: Ordering[Point2D] =
+      Ordering[(Double, Double)].on(m => (m.x, m.y))
+
+    val count = 2 + Random.nextInt(7)
+    val points = List.fill(count)(canvas.randomCluster(1100)).flatten
+    val kMeans2D = new KMeans2D
+    val steps = kMeans2D.runSteps(count, points).map(_.sortBy(_.mean.value))
+    animateClusters(steps)
   }
 }
