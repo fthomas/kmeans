@@ -15,7 +15,7 @@ lazy val gui = crossProject
   .settings(commonSettings)
   .settings(
     libraryDependencies ++= Seq(
-      "org.scala-js" %%% "scalajs-dom" % "0.9.2"
+      "org.scala-js" %%% "scalajs-dom" % "0.9.6"
     ),
     // This is an application with a main method
     scalaJSUseMainModuleInitializer := true
