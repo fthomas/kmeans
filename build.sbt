@@ -1,15 +1,17 @@
+import sbtcrossproject.CrossPlugin.autoImport.crossProject
+
 name := "kmeans"
 
 /// projects
 
-lazy val core = crossProject
+lazy val core = crossProject(JVMPlatform, JSPlatform)
   .in(file("modules/core"))
   .settings(commonSettings)
 
 lazy val coreJS = core.js
 lazy val coreJVM = core.jvm
 
-lazy val gui = crossProject
+lazy val gui = crossProject(JSPlatform)
   .in(file("modules/gui"))
   .dependsOn(core)
   .settings(commonSettings)
